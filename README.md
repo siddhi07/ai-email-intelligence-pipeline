@@ -2,6 +2,8 @@
 
 AI-Assisted Email Extraction, SQLite Storage, Duplicate Detection, and Gmail MCP Notifications
 
+This project demonstrates the full workflow from raw email ingestion to automated Gmail MCP notification validation.
+
 ---
 
 ## 1. Project Summary
