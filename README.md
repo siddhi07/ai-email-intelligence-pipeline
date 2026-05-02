@@ -67,8 +67,8 @@ enron-email-pipeline/
 │
 ├── output/
 │   ├── replies/
-│   ├── send_log.csv
-│   └── pipeline.db
+│   └── send_log.csv
+│
 │
 ├── schema.sql
 ├── sample_queries.sql
@@ -79,7 +79,17 @@ enron-email-pipeline/
 └── mcp_config.json.example
 ```
 
-## 4. Installation
+## 4. Database Output
+
+The SQLite database is generated locally at:
+
+```text
+database/enron_emails.db
+```
+
+It is not committed to GitHub because generated database files can be large. The database can be recreated by running the notebook or `main.py`.
+
+## 5. Installation
 
 Create virtual environment:
 
@@ -94,7 +104,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## 5. Run Tests
+## 6. Run Tests
 
 ```bash
 python3 -m pytest
@@ -103,15 +113,15 @@ python3 -m pytest
 Current status:
 
 ```
-10 tests passed
+10 tests passed (parser, database, duplicate detection, notifier)
 ```
 
-## 6. How to Run
+## 7. How to Run
 
 ### Standard Full Pipeline
 
 ```bash
-python3 main.py
+python3 main.py --maildir /path/to/maildir_subset --reset-db
 ```
 
 ### Dry Run Mode
@@ -119,7 +129,7 @@ python3 main.py
 Generates duplicate notices without sending live emails.
 
 ```bash
-python3 main.py --send-live false
+python3 main.py --maildir /path/to/maildir_subset --reset-db --send-live false
 ```
 
 ### Controlled Live Mode
@@ -127,10 +137,10 @@ python3 main.py --send-live false
 Sends capped notifications through Gmail MCP.
 
 ```bash
-python3 main.py --send-live --max-live-sends 3
+python3 main.py --maildir /path/to/maildir_subset --send-live --max-live-sends 3
 ```
 
-## 7. Architecture Overview
+## 8. Architecture Overview
 
 ```
 Raw Enron Files
@@ -148,7 +158,7 @@ Dry Run Drafts / Gmail MCP Live Sends
 Reports + Logs
 ```
 
-## 8. Database Design
+## 9. Database Design
 
 Main tables:
 
@@ -166,7 +176,7 @@ notification_sent
 notification_date
 ```
 
-## 9. Duplicate Detection Strategy
+## 10. Duplicate Detection Strategy
 
 This project avoids expensive all-vs-all fuzzy comparison.
 
@@ -184,7 +194,7 @@ Benefits:
 - Better scalability
 - Cleaner duplicate linking
 
-## 10. Gmail MCP Setup
+## 11. Gmail MCP Setup
 
 ### Step 1: Google Cloud
 
@@ -220,6 +230,8 @@ Use:
 }
 ```
 
+This repository also includes `mcp_config.json.example` as a reusable safe template with no credentials committed.
+
 ### Step 3: Authenticate
 
 ```bash
@@ -227,7 +239,7 @@ cd ~/.gmail-mcp
 npx -y @gongrzhe/server-gmail-autoauth-mcp auth
 ```
 
-## 11. Live Validation Completed
+## 12. Live Validation Completed
 
 Three real duplicate notification emails were successfully sent through Gmail MCP to:
 
@@ -241,7 +253,7 @@ After delivery:
 - `notification_sent = 1`
 - `notification_date` stored
 
-## 12. Outputs Generated
+## 13. Outputs Generated
 
 Files:
 
@@ -253,7 +265,7 @@ output/replies/*.eml
 extraction_stats.json
 ```
 
-## 13. Sample SQL Queries
+## 14. Sample SQL Queries
 
 See:
 
@@ -267,7 +279,7 @@ Includes examples such as:
 - Unnotified duplicates
 - Parse failure counts
 
-## 14. AI Collaboration Notes
+## 15. AI Collaboration Notes
 
 See:
 
@@ -284,7 +296,7 @@ Documents:
 - Debugging iterations
 - Ownership split
 
-## 15. Final Outcome
+## 16. Final Outcome
 
 This project demonstrates:
 
