@@ -234,7 +234,7 @@ How do I update SQLite notification_sent after live sends?
 
 Screenshots included in:
 
-- output/screenshots/gmail_3_notifications.png
+- output/screenshots/gmail_notifications.png
 - output/screenshots/claude_mcp_send_tool.png
 
   
