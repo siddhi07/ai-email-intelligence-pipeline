@@ -229,6 +229,16 @@ Help me send 3 duplicate notification emails from my pipeline to a dummy Gmail a
 Prompt 4
 How do I update SQLite notification_sent after live sends?
 
+
+### Live MCP Evidence
+
+Screenshots included in:
+
+- output/screenshots/gmail_3_notifications.png
+- output/screenshots/claude_mcp_send_tool.png
+
+  
+
 ### Debugging Issues Encountered and Resolutions
 
 Issue 1: OAuth Keys File Not Found
