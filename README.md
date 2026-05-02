@@ -5,6 +5,16 @@ AI-Assisted Email Extraction, SQLite Storage, Duplicate Detection, and Gmail MCP
 This project demonstrates the full workflow from raw email ingestion to automated Gmail MCP notification validation.
 
 ---
+## Things to add
+Selected Mailboxes:
+- kaminski-v
+- farmer-d
+- beck-s
+- lokay-m
+- kitchen-l
+
+Reason for selection:
+These mailboxes were chosen to provide a representative sample with varied folder depth, realistic communication volume, multiple senders/recipients, forwarded chains, and enough total emails (>10,000) to validate parsing, duplicate detection, and notification workflows efficiently without requiring the full 500k dataset.
 
 ## 1. Project Summary
 
