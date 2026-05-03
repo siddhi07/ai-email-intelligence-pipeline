@@ -5,16 +5,6 @@ AI-Assisted Email Extraction, SQLite Storage, Duplicate Detection, and Gmail MCP
 This project demonstrates the full workflow from raw email ingestion to automated Gmail MCP notification validation.
 
 ---
-## Things to add
-Selected Mailboxes:
-- kaminski-v
-- farmer-d
-- beck-s
-- lokay-m
-- kitchen-l
-
-Reason for selection:
-These mailboxes were chosen to provide a representative sample with varied folder depth, realistic communication volume, multiple senders/recipients, forwarded chains, and enough total emails (>10,000) to validate parsing, duplicate detection, and notification workflows efficiently without requiring the full 500k dataset.
 
 ## 1. Project Summary
 
@@ -36,7 +26,38 @@ This submission includes both:
 
 ---
 
-## 2. Deliverables Included
+## 2. Dataset Scope
+
+Source: **Enron Email Dataset**
+
+The full dataset contains approximately **500,000+ emails across 150 employee mailboxes**.
+
+A representative subset was used for pipeline validation to keep execution practical while preserving realistic complexity.
+
+### Selected Mailboxes
+
+- kaminski-v
+- farmer-d
+- beck-s
+- lokay-m
+- kitchen-l
+
+### Why These Mailboxes Were Chosen
+
+These mailboxes were selected to provide:
+
+- varied folder depth and nested structure
+- realistic communication volume
+- multiple senders and recipients
+- forwarded / reply chains
+- diverse metadata quality
+- more than 10,000 emails total for robust testing
+
+This allowed realistic end-to-end validation without requiring the full dataset.
+
+---
+
+## 3. Deliverables Included
 
 | Item | Description |
 |------|-------------|
@@ -54,10 +75,10 @@ This submission includes both:
 
 ---
 
-## 3. Repository Structure
+## 4. Repository Structure
 
-```
-enron-email-pipeline/
+```text
+ai-email-intelligence-pipeline/
 │
 ├── notebook/
 │   └── Enron_Email_Pipeline.ipynb
@@ -81,27 +102,28 @@ enron-email-pipeline/
 │   ├── replies/
 │   └── send_log.csv
 │
-│
+├── main.py
 ├── schema.sql
 ├── sample_queries.sql
-├── main.py
 ├── requirements.txt
 ├── AI_USAGE.md
 ├── README.md
 └── mcp_config.json.example
 ```
 
-## 4. Database Output
+## 5. Database Output
 
-The SQLite database is generated locally at:
+The SQLite database is generated locally during pipeline execution.
 
-```text
-database/enron_emails.db
+It is intentionally not committed to GitHub because generated database files can be large and can always be recreated.
+
+To generate locally:
+
+```bash
+python3 main.py --maildir /path/to/maildir_subset --reset-db
 ```
 
-It is not committed to GitHub because generated database files can be large. The database can be recreated by running the notebook or `main.py`.
-
-## 5. Installation
+## 6. Installation
 
 Create virtual environment:
 
@@ -116,7 +138,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## 6. Run Tests
+## 7. Run Tests
 
 ```bash
 python3 -m pytest
@@ -128,12 +150,18 @@ Current status:
 10 tests passed (parser, database, duplicate detection, notifier)
 ```
 
-## 7. How to Run
+## 8. How to Run
+
+Before running main.py, place a local Enron subset in:
+
+```
+data/maildir_subset/
+```
 
 ### Standard Full Pipeline
 
 ```bash
-python3 main.py --maildir /path/to/maildir_subset --reset-db
+python3 main.py --maildir data/maildir_subset --reset-db
 ```
 
 ### Dry Run Mode
@@ -141,7 +169,7 @@ python3 main.py --maildir /path/to/maildir_subset --reset-db
 Generates duplicate notices without sending live emails.
 
 ```bash
-python3 main.py --maildir /path/to/maildir_subset --reset-db --send-live false
+python3 main.py --maildir data/maildir_subset --reset-db --send-live false
 ```
 
 ### Controlled Live Mode
@@ -149,10 +177,10 @@ python3 main.py --maildir /path/to/maildir_subset --reset-db --send-live false
 Sends capped notifications through Gmail MCP.
 
 ```bash
-python3 main.py --maildir /path/to/maildir_subset --send-live --max-live-sends 3
+python3 main.py --maildir data/maildir_subset --send-live --max-live-sends 3
 ```
 
-## 8. Architecture Overview
+## 9. Architecture Overview
 
 ```
 Raw Enron Files
@@ -170,14 +198,14 @@ Dry Run Drafts / Gmail MCP Live Sends
 Reports + Logs
 ```
 
-## 9. Database Design
+## 10. Database Design
 
 Main tables:
 
-- **emails** — Stores parsed email metadata and duplicate flags.
-- **email_recipients** — Normalized `to`, `cc`, `bcc` recipients.
-- **pipeline_runs** — Tracks each pipeline execution.
-- **parse_failures** — Stores rejected email records and reasons.
+- **emails** — Stores parsed email metadata and duplicate flags
+- **email_recipients** — Normalized to, cc, bcc recipients
+- **pipeline_runs** — Tracks each pipeline execution
+- **parse_failures** — Stores rejected email records and reasons
 
 Required duplicate fields included:
 
@@ -188,25 +216,29 @@ notification_sent
 notification_date
 ```
 
-## 10. Duplicate Detection Strategy
+## 11. Duplicate Detection Strategy
 
 This project avoids expensive all-vs-all fuzzy comparison.
 
 Instead:
 
-1. Normalize subject lines (`Re:`, `Fwd:` removed)
-2. Group by sender + normalized subject
-3. Hash normalized body text
-4. Use exact matches first
-5. Use fuzzy similarity only inside small groups
+- Normalize subject lines (Re:, Fwd: removed)
+- Group by sender + normalized subject
+- Hash normalized body text
+- Use exact matches first
+- Use fuzzy similarity only inside small groups
 
-Benefits:
+### Fuzzy Matching Library
+
+Used RapidFuzz with a 90% similarity threshold.
+
+### Benefits
 
 - Faster runtime
 - Better scalability
 - Cleaner duplicate linking
 
-## 11. Gmail MCP Setup
+## 12. Gmail MCP Setup
 
 ### Step 1: Google Cloud
 
@@ -242,7 +274,7 @@ Use:
 }
 ```
 
-This repository also includes `mcp_config.json.example` as a reusable safe template with no credentials committed.
+This repository includes mcp_config.json.example as a reusable safe template with no credentials committed.
 
 ### Step 3: Authenticate
 
@@ -251,7 +283,7 @@ cd ~/.gmail-mcp
 npx -y @gongrzhe/server-gmail-autoauth-mcp auth
 ```
 
-## 12. Live Validation Completed
+## 13. Live Validation Completed
 
 Three real duplicate notification emails were successfully sent through Gmail MCP to:
 
@@ -265,9 +297,7 @@ After delivery:
 - `notification_sent = 1`
 - `notification_date` stored
 
-## 13. Outputs Generated
-
-Files:
+## 14. Outputs Generated
 
 ```
 duplicates_report.csv
@@ -277,7 +307,7 @@ output/replies/*.eml
 extraction_stats.json
 ```
 
-## 14. Sample SQL Queries
+## 15. Sample SQL Queries
 
 See:
 
@@ -291,7 +321,7 @@ Includes examples such as:
 - Unnotified duplicates
 - Parse failure counts
 
-## 15. AI Collaboration Notes
+## 16. AI Collaboration Notes
 
 See:
 
@@ -307,8 +337,9 @@ Documents:
 - Prompting strategy
 - Debugging iterations
 - Ownership split
+- Dedicated MCP integration workflow
 
-## 16. Final Outcome
+## 17. Final Outcome
 
 This project demonstrates:
 
