@@ -100,7 +100,12 @@ ai-email-intelligence-pipeline/
 │
 ├── output/
 │   ├── replies/
-│   └── send_log.csv
+|   ├── screenshots/
+│   ├── send_log.csv
+|   ├── parsed_output.txt
+|   ├── extraction_stats.json
+|   ├── duplicate_report.csv
+|   └── error_log.txt
 │
 ├── main.py
 ├── schema.sql
