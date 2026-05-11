@@ -37,10 +37,10 @@ A representative subset was used for pipeline validation to keep execution pract
 ### Selected Mailboxes
 
 - kaminski-v
-- farmer-d
-- beck-s
-- lokay-m
-- kitchen-l
+- lay-k
+- skilling-j
+- mann-k
+- taylor-m
 
 ### Why These Mailboxes Were Chosen
 
